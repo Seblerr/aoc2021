@@ -22,41 +22,29 @@ vector<int> readFile()
     return numbers;
 }
 
-int part1(vector<int> numbers)
+pair<int, int> getCounts(const vector<int> numbers)
 {
-    int count = 0;
-    for (int i = 0; i < numbers.size(); ++i)
+    auto count1 = 0;
+    auto count2 = 0;
+
+    for (int i = 1; i < numbers.size(); ++i)
     {
         if (numbers[i] > numbers[i - 1])
         {
-            count++;
+            count1++;
         }
-    }
-
-    return count;
-}
-
-int part2(vector<int> numbers)
-{
-    auto count = 0;
-    auto sum = 0;
-    auto prevSum = std::numeric_limits<int>::max();
-    for (int i = 0; i < numbers.size(); ++i)
-    {
-        sum = numbers[i] + numbers[i + 1] + numbers[i + 2];
-        if (sum > prevSum)
+        if (i >= 3 && numbers[i] > numbers[i - 3])
         {
-            count++;
+            count2++;
         }
-        prevSum = sum;
     }
-    return count;
+
+    return make_pair(count1, count2);
 }
 
 int main()
 {
-    auto numbers = readFile();
-    printf("Part1: %d\n", part1(numbers));
-    printf("Part2: %d\n", part2(numbers));
+    const auto numbers = readFile();
+    printf("Part 1: %d\nPart 2: %d\n", getCounts(numbers).first, getCounts(numbers).second);
     return 0;
 }
