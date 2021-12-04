@@ -6,29 +6,42 @@
 
 using namespace std;
 
-int main ()
+constexpr int bits = 12;
+
+int main()
 {
+    ifstream file("input.txt");
     string line;
-    ifstream myfile("input.txt");
-    if (myfile.is_open())
+    vector<bitset<bits>> inputs;
+    if (file.is_open())
     {
-        vector<int> intCounter(5);
-        while (getline(myfile, line))
+        while (getline(file, line))
         {
-            bitset<5> b(line);
-            for (int i=0;i<b.size();i++)
-            {
-                if (b.test(i))
-                {
-                    intCounter[i]++;
-                }
-            }
-        }
-        for (const auto &i : intCounter)
-        {
-            printf("setCounter: %d\n", i);
+            inputs.push_back(bitset<bits>(line));
         }
     }
-    myfile.close();
+    file.close();
+
+    vector<int> counter(bits);
+    for (const auto &input : inputs)
+    {
+        for (auto i = 0; i < bits; i++)
+        {
+            if (input.test(i))
+            {
+                counter[i]++;
+            }
+        }
+    }
+
+    bitset<bits> gamma;
+    for (auto i = 0; i < counter.size(); i++)
+    {
+        gamma[i] = counter[i] > inputs.size() / 2 ? 1 : 0;
+    }
+    auto epsilon = bitset<bits>(gamma).flip();
+
+    cout << "Power consumption: " << gamma.to_ulong() * epsilon.to_ulong() << endl;
+
     return 0;
 }
